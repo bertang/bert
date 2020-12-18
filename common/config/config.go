@@ -2,7 +2,8 @@ package config
 
 import (
 	"fmt"
-	"bert/common/files"
+	"github.com/bertang/bert/common/files"
+
 	"github.com/spf13/viper"
 	"log"
 	"os"

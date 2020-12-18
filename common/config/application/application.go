@@ -1,7 +1,7 @@
 package application
 
 import (
-	"bert/common/config"
+	"github.com/bertang/bert/common/config"
 )
 
 var (

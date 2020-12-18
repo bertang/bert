@@ -1,6 +1,6 @@
 package services
 
-import "bert/datamodels"
+import "github.com/bertang/bert/datamodels"
 
 type ICrontabService interface {
 	//获取已正常激活的定时任务

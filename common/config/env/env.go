@@ -1,7 +1,7 @@
 package env
 
 import (
-	"bert/common/config"
+	"github.com/bertang/bert/common/config"
 	"github.com/spf13/viper"
 )
 

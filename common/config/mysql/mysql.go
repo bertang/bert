@@ -2,7 +2,7 @@ package mysql
 
 import (
 	"fmt"
-	"bert/common/config"
+	"github.com/bertang/bert/common/config"
 	"log"
 )
 
