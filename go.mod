@@ -1,4 +1,4 @@
-module framework
+module bert
 
 go 1.15
 
