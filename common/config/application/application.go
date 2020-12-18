@@ -1,7 +1,7 @@
 package application
 
 import (
-	"framework/common/config"
+	"bert/common/config"
 )
 
 var (

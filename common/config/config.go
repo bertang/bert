@@ -2,7 +2,7 @@ package config
 
 import (
 	"fmt"
-	"framework/common/files"
+	"bert/common/files"
 	"github.com/spf13/viper"
 	"log"
 	"os"

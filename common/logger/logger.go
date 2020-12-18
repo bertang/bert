@@ -1,7 +1,7 @@
 package logger
 
 import (
-	"framework/common/config/application"
+	"bert/common/config/application"
 	"github.com/kataras/golog"
 	"github.com/natefinch/lumberjack"
 	"io"

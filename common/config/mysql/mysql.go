@@ -2,7 +2,7 @@ package mysql
 
 import (
 	"fmt"
-	"framework/common/config"
+	"bert/common/config"
 	"log"
 )
 
