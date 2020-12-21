@@ -18,7 +18,7 @@ type Migration struct {
 }
 
 //Exec 执行数据库迁移
-func Exec() {
+func Start() {
 	logger.Info("开始迁移数据库。。。")
 	migrator := database.GetDB().Migrator()
 	for _, v := range Migrates {

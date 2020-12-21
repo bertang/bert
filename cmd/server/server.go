@@ -19,7 +19,7 @@ var (
 )
 
 //Exec web运行
-func Exec() {
+func Start() {
         run()
 }
 func SetOnErrCodeHandler(handler ...context.Handler) {
