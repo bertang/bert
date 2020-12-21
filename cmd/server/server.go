@@ -6,23 +6,27 @@ import (
         "github.com/bertang/bert/cmd/server/router"
         "github.com/bertang/bert/common/config/application"
         "github.com/bertang/bert/common/logger"
+        "github.com/kataras/iris/v12/context"
+        "github.com/rs/cors"
 
         "github.com/kataras/iris/v12"
-        "github.com/rs/cors"
 )
 
 var (
         app     *iris.Application
         appConf = application.GetAppConf()
+        errCodeHander []context.Handler
 )
 
 //Exec web运行
 func Exec() {
         run()
 }
+func SetOnErrCodeHandler(handler ...context.Handler) {
+        errCodeHander = handler
+}
 
 func run() {
-
         if appConf.Debug {
                 app = iris.Default()
         } else {
@@ -36,6 +40,8 @@ func run() {
 
         //设置日志
         app.Logger().SetOutput(logger.GetWriter())
+        //统一为一个logger
+        logger.SetLogger(app.Logger())
 
         //设置跨域
         setCors()
@@ -44,7 +50,10 @@ func run() {
         router.RegisterRouter(app)
 
         //错误处理
-        app.OnAnyErrorCode(onCodeErrorHandle)
+        if len(errCodeHander) > 0 {
+                app.OnAnyErrorCode(errCodeHander...)
+        }
+
 
         //运行服务
         err := app.Run(iris.Addr(fmt.Sprintf("%s:%d", appConf.Host, appConf.Port)))
@@ -53,23 +62,21 @@ func run() {
         }
 }
 
-//错误处理
-func onCodeErrorHandle(ctx iris.Context) {
-        //_, err := ctx.JSON(tools.Failure(ctx.GetStatusCode()))
-        //logger.Error(err)
-        ctx.StopExecution()
-}
 
 //设置跨域
 func setCors() {
+        if len(appConf.Cors) == 0  {
+                return
+        }
         c := cors.New(cors.Options{
-                AllowedOrigins:   nil,
-                AllowedMethods:   nil,
+                AllowedOrigins:   appConf.Cors,
+                AllowedMethods:   appConf.CorsMethod,
                 AllowedHeaders:   nil,
                 AllowCredentials: false,
         })
         //跨域提前设置
         app.WrapRouter(c.ServeHTTP)
+
 }
 
 func onInterrupt() {

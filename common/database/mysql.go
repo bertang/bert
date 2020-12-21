@@ -1,4 +1,4 @@
-package db
+package database
 
 import (
         mysqlConf "github.com/bertang/bert/common/config/mysql"

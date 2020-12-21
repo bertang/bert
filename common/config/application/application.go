@@ -20,6 +20,8 @@ type application struct {
         MaxBackup  int     `mapstructure:"max_backup"`
         Compress   bool    `mapstructure:"log_compress"`
         JwtSecret  string  `mapstructure:"jwt_key"`
+        Cors       []string `mapstructure:"cors"`
+        CorsMethod []string `mapstructure:"cors_method"`
 }
 
 //初始化系统

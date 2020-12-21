@@ -2,13 +2,14 @@ package mysql
 
 import (
 	"fmt"
-	"github.com/bertang/bert/common/config"
 	"log"
+
+	"github.com/bertang/bert/common/config"
 )
 
 var (
 	mConf      *mysqlConf
-	dbFilePath = &config.FilePath{Filename: "db.yml"}
+	dbFilePath = &config.FilePath{Filename: "mysql.yml"}
 )
 
 func initMysqlConf() {
@@ -19,7 +20,7 @@ func initMysqlConf() {
 type mysqlConf struct {
 	Host            string
 	Port            int
-	DBName          string `mapstructure:"db_name"`
+	DBName          string `mapstructure:"dbname"`
 	User            string
 	Password        string
 	Charset         string
