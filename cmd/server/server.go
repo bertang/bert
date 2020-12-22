@@ -2,6 +2,8 @@ package server
 
 import (
         "fmt"
+        "os"
+
         "github.com/bertang/bert/cmd/cron"
         "github.com/bertang/bert/cmd/server/router"
         "github.com/bertang/bert/common/config/application"
@@ -13,15 +15,17 @@ import (
 )
 
 var (
-        app     *iris.Application
-        appConf = application.GetAppConf()
+        app           *iris.Application
+        appConf       = application.GetAppConf()
         errCodeHander []context.Handler
 )
 
-//Exec web运行
+//Start web运行
 func Start() {
         run()
 }
+
+//SetOnErrCodeHandler 设置错误处理
 func SetOnErrCodeHandler(handler ...context.Handler) {
         errCodeHander = handler
 }
@@ -31,6 +35,7 @@ func run() {
                 app = iris.Default()
         } else {
                 app = iris.New()
+                app.Logger().SetLevel("error")
         }
 
         //服务常用配置
@@ -54,7 +59,6 @@ func run() {
                 app.OnAnyErrorCode(errCodeHander...)
         }
 
-
         //运行服务
         err := app.Run(iris.Addr(fmt.Sprintf("%s:%d", appConf.Host, appConf.Port)))
         if err != nil {
@@ -62,10 +66,9 @@ func run() {
         }
 }
 
-
 //设置跨域
 func setCors() {
-        if len(appConf.Cors) == 0  {
+        if len(appConf.Cors) == 0 {
                 return
         }
         c := cors.New(cors.Options{
@@ -81,6 +84,7 @@ func setCors() {
 
 func onInterrupt() {
         cron.Stop()
+        os.Exit(1)
 }
 
 func configuration() iris.Configuration {
@@ -89,7 +93,7 @@ func configuration() iris.Configuration {
                 Charset:    "UTF-8",
         }
 
-        if appConf.Debug{
+        if appConf.Debug {
                 configuration.EnableOptimizations = true
                 configuration.FireMethodNotAllowed = true
                 configuration.DisableStartupLog = true

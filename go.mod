@@ -12,10 +12,11 @@ require (
 	github.com/kataras/iris/v12 v12.1.8
 	github.com/moul/http2curl v1.0.0 // indirect
 	github.com/natefinch/lumberjack v2.0.0+incompatible
+	github.com/nats-io/nats-server/v2 v2.1.9 // indirect
 	github.com/onsi/ginkgo v1.14.2 // indirect
 	github.com/onsi/gomega v1.10.4 // indirect
 	github.com/robfig/cron v1.2.0
-	github.com/rs/cors v1.7.0 // indirect
+	github.com/rs/cors v1.7.0
 	github.com/sergi/go-diff v1.1.0 // indirect
 	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
 	github.com/spf13/viper v1.7.1
@@ -26,6 +27,6 @@ require (
 	github.com/yudai/golcs v0.0.0-20170316035057-ecda9a501e82 // indirect
 	github.com/yudai/pp v2.0.1+incompatible // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
-	gorm.io/driver/mysql v1.0.3 // indirect
-	gorm.io/gorm v1.20.8 // indirect
+	gorm.io/driver/mysql v1.0.3
+	gorm.io/gorm v1.20.8
 )
