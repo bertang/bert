@@ -2,7 +2,6 @@ package cron
 
 import (
 	"errors"
-	"fmt"
 	"reflect"
 	"sync"
 
@@ -55,19 +54,21 @@ func Register(key string, funcName interface{}, comment string) {
 
 //Start 开始执行定时任务
 func Start() {
-	logger.Info("定时任务开始执行！")
 	start()
 }
 
 func start() {
 	ch = make(chan interface{})
 	go func() {
+		if service == nil {
+			return
+		}
 
 		jobList := service.JobList()
 		if jobList == nil {
 			return
 		}
-		fmt.Println(jobList)
+
 		//判断传入类型
 		jobListType := reflect.TypeOf(jobList)
 		jobListRv := reflect.ValueOf(jobList)
@@ -102,7 +103,7 @@ func start() {
 				mIndex.id = k
 			}
 		}
-		fmt.Println(mIndex)
+
 		c := cron.New()
 		var hasCron bool
 		for k := 0; k < jobListRv.Len(); k++ {
@@ -139,9 +140,10 @@ func start() {
 			hasCron = true
 		}
 		if !hasCron {
+			logger.Info("定时任务为空，跳过")
 			return
 		}
-		fmt.Println(hasCron)
+		logger.Info("定时任务开始执行...")
 		c.Start()
 
 		for {
