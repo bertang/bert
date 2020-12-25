@@ -35,13 +35,13 @@ func NewPageHelper(ctx iris.Context) IPageHelper {
 	size := ctx.URLParamIntDefault("size", 0)
 
 	if size == 0 {
-		size  = application.GetAppConf().PageSize
+		size = application.GetAppConf().PageSize
 	}
 
 	helper := &pageHelper{
 		Page: page,
 		Size: size,
 	}
-	helper.Size = (helper.Page - 1) * helper.Size
+	helper.offset = (helper.Page - 1) * helper.Size
 	return helper
 }
