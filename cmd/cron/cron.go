@@ -10,12 +10,13 @@ import (
 )
 
 var (
-	ch      chan interface{}
-	jobs    sync.Map
-	service ICronService
-	mIndex  = new(modelIndex)
+	ch      chan interface{} //用于停止定时任务的channel
+	jobs    sync.Map //注册任务的保存地
+	service ICronService //用于获取任务的service
+	mIndex  = new(modelIndex) //用于反射执行时保存对应属性的位置
 )
 
+//modelIndex 用于保存反射属性的位置
 type modelIndex struct {
 	name       int
 	express    int
@@ -34,6 +35,7 @@ func SetService(s ICronService) {
 	service = s
 }
 
+//crontab 定时任务
 type crontab struct {
 	Func    interface{} `json:"-"`
 	Comment string      `json:"comment"`
@@ -58,7 +60,10 @@ func Start() {
 }
 
 func start() {
+	//用于停止定时任务的channel
 	ch = make(chan interface{})
+
+	//执行定时任务的goroutine
 	go func() {
 		if service == nil {
 			return
@@ -72,19 +77,24 @@ func start() {
 		//判断传入类型
 		jobListType := reflect.TypeOf(jobList)
 		jobListRv := reflect.ValueOf(jobList)
+
+		//判断是否是指针，如果是指针取其指向的实际数据
 		if jobListType.Kind() == reflect.Ptr {
 			jobListRv = jobListRv.Elem()
 			jobListType = jobListType.Elem()
 		}
 
+		// 如果实际类型不是slice则退出
 		if jobListType.Kind() != reflect.Slice {
 			return
 		}
 
+		//判断slice保存的数据的实际类型，取期实际数据
 		child := jobListType.Elem()
 		if child.Kind() == reflect.Ptr {
 			child = child.Elem()
 		}
+
 		//获取tag的位置
 		for k := 0; k < child.NumField(); k++ {
 			name := child.Field(k).Tag.Get("cron_key")
@@ -93,59 +103,65 @@ func start() {
 				mIndex.name = k
 			case "express":
 				mIndex.express = k
-
 			case "params":
 				mIndex.parameters = k
 			case "key":
 				mIndex.key = k
 			}
+
+			//哪果使用了 gorm.Model如法设置 tag所以使用属性名来获取
 			if child.Field(k).Name == "ID" {
 				mIndex.id = k
 			}
 		}
 
+		//创建定时任务
 		c := cron.New()
-		var hasCron bool
+		var hasCron bool //用于判断是否有定时任务
 		for k := 0; k < jobListRv.Len(); k++ {
+			//从反射获取数据
 			vv := jobListRv.Index(k)
 			if vv.Kind() == reflect.Ptr {
 				vv = vv.Elem()
 			}
+
 			id := vv.Field(mIndex.id).Uint()
 			name := vv.Field(mIndex.name).String()
 			express := vv.Field(mIndex.express).String()
 			params := vv.Field(mIndex.parameters).String()
 			key := vv.Field(mIndex.key).String()
+
+			//如果时间表达式为空，则没有必要进行下去，跳过
 			if express == "" {
 				continue
 			}
-			if _, ok := jobs.Load(key); !ok {
-				continue
-			}
-			f, _ := jobs.Load(key)
 
-			v, _ := f.(*crontab)
-			sched := &schedule{
-				id:      id,
-				jobName: name,
-				params:  params,
-				method:  v.Func,
+			//如果不存在这个key则跳过
+			if f, ok := jobs.Load(key); ok {
+				v, _ := f.(*crontab)
+				err := c.AddJob(express, &schedule{
+					id:      uint(id),
+					jobName: name,
+					params:  params,
+					method:  v.Func,
+				})
+				if err != nil {
+					logger.Error(err)
+					continue
+				}
+				hasCron = true
 			}
-
-			err := c.AddJob(express, sched)
-			if err != nil {
-				logger.Error(err)
-				continue
-			}
-			hasCron = true
 		}
+		//如果没有定时任务 则跳出
 		if !hasCron {
 			logger.Info("定时任务为空，跳过")
 			return
 		}
+
 		logger.Info("定时任务开始执行...")
 		c.Start()
 
+		//在另一个goroutine中 阻塞，
 		for {
 			select {
 			case <-ch:
@@ -163,13 +179,14 @@ func Stop() {
 		return
 	}
 	close(ch)
-
+	ch  = nil
 }
 
 //Restart 重启
 func Restart() {
 	logger.Info("重启定时任务")
 	close(ch)
+	//重置为空
 	ch = nil
 	Start()
 }

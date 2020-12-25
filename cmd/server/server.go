@@ -16,8 +16,8 @@ import (
 
 var (
         app           *iris.Application
-        appConf       = application.GetAppConf()
-        errCodeHander []context.Handler
+        appConf        = application.GetAppConf()
+        errCodeHandler []context.Handler
 )
 
 //Start web运行
@@ -26,10 +26,12 @@ func Start() {
 }
 
 //SetOnErrCodeHandler 设置错误处理
-func SetOnErrCodeHandler(handler ...context.Handler) {
-        errCodeHander = handler
+//@handler 执行的中间件
+func RegisterErrCodeHandler(handler ...context.Handler) {
+        errCodeHandler = handler
 }
 
+//执行
 func run() {
         if appConf.Debug {
                 app = iris.Default()
@@ -44,8 +46,6 @@ func run() {
         iris.RegisterOnInterrupt(onInterrupt)
 
         //设置日志
-        app.Logger().SetOutput(logger.GetWriter())
-        //统一为一个logger
         logger.SetLogger(app.Logger())
 
         //设置跨域
@@ -55,8 +55,8 @@ func run() {
         router.RegisterRouter(app)
 
         //错误处理
-        if len(errCodeHander) > 0 {
-                app.OnAnyErrorCode(errCodeHander...)
+        if len(errCodeHandler) > 0 {
+                app.OnAnyErrorCode(errCodeHandler...)
         }
 
         //运行服务
@@ -93,6 +93,7 @@ func configuration() iris.Configuration {
                 Charset:    "UTF-8",
         }
 
+        //如果是生产环境，添加一些优化
         if appConf.Debug {
                 configuration.EnableOptimizations = true
                 configuration.FireMethodNotAllowed = true

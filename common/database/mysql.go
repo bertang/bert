@@ -27,10 +27,21 @@ func initConnection() {
         var err error
         dbConf := mysqlConf.GetMysqlConf()
 
-        db, err = gorm.Open(mysql.Open(dbConf.GetDSN()), &gorm.Config{})
+        //配置
+        conf:= &gorm.Config{
+                NamingStrategy: schema.NamingStrategy{SingularTable: dbConf.SingularTable, TablePrefix: dbConf.TablePrefix},
+        }
+        if application.GetAppConf().Debug {
+                conf.Logger.LogMode(logger.Info)
+        }
+
+        //连接数据库
+        db, err = gorm.Open(mysql.Open(dbConf.GetDSN()), conf)
         if err != nil {
                 log.Fatal(err)
         }
+
+        //连接池设置
         sqlDb, err := db.DB()
         if err != nil {
                 log.Fatal(err)
@@ -43,13 +54,6 @@ func initConnection() {
         }
         if dbConf.ConnMaxLifeTime > 0 {
                 sqlDb.SetConnMaxLifetime(time.Duration(dbConf.ConnMaxLifeTime) * time.Minute)
-        }
-
-        db.NamingStrategy = schema.NamingStrategy{SingularTable: dbConf.SingularTable, TablePrefix: dbConf.TablePrefix}
-
-        //配置是否是开发模式
-        if application.GetAppConf().Debug {
-                db.Logger = logger.Default.LogMode(logger.Info)
         }
 }
 

@@ -31,7 +31,7 @@ type mysqlConf struct {
 	TablePrefix     string `mapstructure:"prefix"`
 }
 
-//返回格式化的数据库dsn
+//GetDSN 返回格式化的数据库dsn
 func (m *mysqlConf) GetDSN() string {
 	if m.Host == "" || m.User == "" || m.Password == "" {
 		log.Fatal("数据库配置不正确！")
@@ -49,6 +49,7 @@ func GetMysqlConf() *mysqlConf {
 	return mConf
 }
 
+//SetMysqlConfFileName 自定义文件名
 func SetMysqlConfFileName(name string) {
 	dbFilePath.Filename = name
 }
