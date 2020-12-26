@@ -15,7 +15,7 @@ import (
 )
 
 var (
-        app           *iris.Application
+        app            *iris.Application
         appConf        = application.GetAppConf()
         errCodeHandler []context.Handler
 )
@@ -25,7 +25,7 @@ func Start() {
         run()
 }
 
-//SetOnErrCodeHandler 设置错误处理
+//RegisterErrCodeHandler 设置错误处理
 //@handler 执行的中间件
 func RegisterErrCodeHandler(handler ...context.Handler) {
         errCodeHandler = handler

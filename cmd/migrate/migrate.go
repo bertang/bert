@@ -48,7 +48,6 @@ func Start() {
         logger.Info("开始迁移数据库。。。")
         migrator := database.GetDB().Migrator()
         for _, v := range Migrates {
-
                 if !migrator.HasTable(v.Model) {
                         _ = migrator.AutoMigrate(v.Model)
                 }
