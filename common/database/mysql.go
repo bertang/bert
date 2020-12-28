@@ -30,7 +30,8 @@ func initConnection() {
 
 	//配置
 	conf := &gorm.Config{
-		NamingStrategy: schema.NamingStrategy{SingularTable: dbConf.SingularTable, TablePrefix: dbConf.TablePrefix},
+		NamingStrategy:                           schema.NamingStrategy{SingularTable: dbConf.SingularTable, TablePrefix: dbConf.TablePrefix},
+		DisableForeignKeyConstraintWhenMigrating: true,
 	}
 
 	if application.GetAppConf().Debug {

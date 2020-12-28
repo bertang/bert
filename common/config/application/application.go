@@ -22,6 +22,7 @@ type application struct {
     MaxBackup  int      `mapstructure:"max_backup"`   //最多可以保存多少个日志备份
     Compress   bool     `mapstructure:"log_compress"` //是否压缩日志
     JwtSecret  string   `mapstructure:"jwt_key"`      // jwt密码
+    JwtMaxAge  int      `mapstructure:"jwt_max_age"`  //jwt最大的有效期,时间小时
     Cors       []string `mapstructure:"cors"`         //需要开启跨域的域名
     CorsMethod []string `mapstructure:"cors_method"`  //需要开启跨域的请求方法
 }
