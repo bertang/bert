@@ -5,32 +5,21 @@ import (
 	"github.com/kataras/iris/v12"
 )
 
-//IPageHelper 分页助手
-type IPageHelper interface {
-	//Offset 获取offset
-	Offset() int
-	//Limit 获取limit
-	Limit() int
-}
-type pageHelper struct {
-	Page   int `json:"page"`
-	Size   int `json:"size"`
-	Total  int `json:"total"`
+//Helper 分页助手
+type Helper struct {
+	Page   int   `json:"page"`
+	Size   int   `json:"size"`
+	Total  int64 `json:"total"`
 	offset int
 }
 
-//获取offset
-func (p *pageHelper) Offset() int {
+//Offset 获取offset
+func (p *Helper) Offset() int {
 	return p.offset
 }
 
-//获取limit
-func (p *pageHelper) Limit() int {
-	return p.Size
-}
-
 //NewPageHelper 生成新的分页助手
-func NewPageHelper(ctx iris.Context) IPageHelper {
+func NewPageHelper(ctx iris.Context) Helper {
 	page := ctx.URLParamIntDefault("page", 1)
 	size := ctx.URLParamIntDefault("size", 0)
 
@@ -38,7 +27,7 @@ func NewPageHelper(ctx iris.Context) IPageHelper {
 		size = application.GetAppConf().PageSize
 	}
 
-	helper := &pageHelper{
+	helper := Helper{
 		Page: page,
 		Size: size,
 	}
