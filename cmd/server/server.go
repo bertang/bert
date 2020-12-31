@@ -71,12 +71,16 @@ func setCors() {
 	if len(appConf.Cors) == 0 {
 		return
 	}
+
+	//跨域
 	c := cors.New(cors.Options{
-		AllowedOrigins:   appConf.Cors,
-		AllowedMethods:   appConf.CorsMethod,
-		AllowedHeaders:   nil,
-		AllowCredentials: false,
+		AllowedOrigins: appConf.Cors,
+		AllowedMethods: appConf.CorsMethod,
+		//需要添加所有的头
+		AllowedHeaders:   []string{"Accept", "Origin", "XRequestedWith", "Content-Type", "LastModified", "Authorization"},
+		AllowCredentials: true,
 	})
+
 	//跨域提前设置
 	app.WrapRouter(c.ServeHTTP)
 
