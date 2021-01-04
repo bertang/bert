@@ -35,6 +35,7 @@ func RegisterErrCodeHandler(handler ...context.Handler) {
 func run() {
         if appConf.Debug {
                 app = iris.Default()
+                app.Logger().SetOutput(os.Stdin)
         } else {
                 app = iris.New()
                 app.Logger().SetLevel("error")
