@@ -56,6 +56,11 @@ func initConfPath() {
 	})
 }
 
+//GetAppPath 获取项目的绝对路径
+func GetAppPath() string {
+	return appPath
+}
+
 func (c *FilePath) getPath() string {
 	return c.Filename
 }

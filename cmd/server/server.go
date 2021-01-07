@@ -3,6 +3,7 @@ package server
 import (
 	"fmt"
 	"os"
+	"path"
 
 	"github.com/bertang/bert/cmd/cron"
 	"github.com/bertang/bert/cmd/server/router"
@@ -50,6 +51,11 @@ func run() {
 
 	//设置跨域
 	setCors()
+
+	//添加静态文件支持
+	if appConf.StaticDir != "" {
+		app.HandleDir(path.Join("", appConf.StaticDir), iris.Dir(appConf.StaticDir))
+	}
 
 	//路由处理
 	router.RegisterRouter(app)
