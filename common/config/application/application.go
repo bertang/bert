@@ -14,7 +14,6 @@ var (
 //application 一些app的配置
 type application struct {
 	Debug      bool     `mapstructure:"debug"`        //是否是开发模式
-	URL        string   `mapstructure:"url"`          //服务端地址 主要用于上传图像返回链接地址
 	UploadPath string   `mapstructure:"upload_path"`  //图片上传路径
 	StaticDir  string   `mapstructure:"static_dir"`   //静态文件地址，主要是用于临时作为图片服务器的静态资源地址
 	Host       string   `mapstructure:"host"`         //服务运行绑定ip
@@ -62,6 +61,7 @@ func initApplication() {
 	if app.UploadPath != "" && !path.IsAbs(app.UploadPath) {
 		app.UploadPath = path.Join(config.GetAppPath(), app.UploadPath)
 	}
+
 }
 
 //GetAppConf 获取系统配置
