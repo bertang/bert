@@ -20,7 +20,7 @@ func initMysqlConf() {
 type mysqlConf struct {
 	Host            string
 	Port            int
-	DBName          string `mapstructure:"dbname"`
+	DBName          string `mapstructure:"db_name"`
 	User            string
 	Password        string
 	Charset         string

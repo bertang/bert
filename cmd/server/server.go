@@ -3,6 +3,7 @@ package server
 import (
         "fmt"
         "os"
+        "path"
 
         "github.com/bertang/bert/cmd/cron"
         "github.com/bertang/bert/cmd/server/router"
@@ -35,7 +36,6 @@ func RegisterErrCodeHandler(handler ...context.Handler) {
 func run() {
         if appConf.Debug {
                 app = iris.Default()
-                app.Logger().SetOutput(os.Stdin)
         } else {
                 app = iris.New()
                 app.Logger().SetLevel("error")
@@ -51,6 +51,11 @@ func run() {
 
         //设置跨域
         setCors()
+
+        //添加静态文件支持
+        if appConf.StaticDir != "" {
+                app.HandleDir(path.Join("", appConf.StaticDir), iris.Dir(appConf.StaticDir))
+        }
 
         //路由处理
         router.RegisterRouter(app)
@@ -72,12 +77,16 @@ func setCors() {
         if len(appConf.Cors) == 0 {
                 return
         }
+
+        //跨域
         c := cors.New(cors.Options{
-                AllowedOrigins:   appConf.Cors,
-                AllowedMethods:   appConf.CorsMethod,
-                AllowedHeaders:   nil,
-                AllowCredentials: false,
+                AllowedOrigins: appConf.Cors,
+                AllowedMethods: appConf.CorsMethod,
+                //需要添加所有的头
+                AllowedHeaders:   []string{"Accept", "Origin", "XRequestedWith", "Content-Type", "LastModified", "Authorization"},
+                AllowCredentials: true,
         })
+
         //跨域提前设置
         app.WrapRouter(c.ServeHTTP)
 
