@@ -12,13 +12,17 @@ var (
 	rootRouter = &router{prefix: "/"}
 )
 
+//RouteFunc 路由
 type RouteFunc func(iRouter IRouter)
+
+//IRouter 路由
 type IRouter interface {
 	Group(string, RouteFunc)
 	Middleware(handlers ...context.Handler) IRouter
 	Prefix(prefix string) IRouter
 	Handler(controller interface{})
 	Services(services ...interface{}) IRouter
+	Done(handlers ...context.Handler) IRouter
 }
 
 //RegisterRouter 向框架中注入
@@ -46,6 +50,9 @@ func register(r *router, app *mvc.Application) {
 	for k := range r.handler {
 		pMvc.Handle(r.handler[k])
 	}
+	if len(r.done) > 0 {
+		pMvc.Router.Done(r.done[0])
+	}
 
 	//子路由
 	for k := range r.routers {
@@ -57,13 +64,21 @@ func register(r *router, app *mvc.Application) {
 type router struct {
 	parent      *router
 	prefix      string
+	done        []context.Handler
 	middlewares []context.Handler
 	services    []interface{}
 	handler     []interface{}
 	routers     []*router
 }
 
-//分组
+//Done 只作用于所有的后置中间件
+func (r *router) Done(handlers ...context.Handler) IRouter {
+	rSub := &router{done: handlers}
+	r.routers = append(r.routers, rSub)
+	return rSub
+}
+
+//Group 分组
 func (r *router) Group(prefix string, routeFunc RouteFunc) {
 	if !strings.HasPrefix(prefix, "/") {
 		prefix = "/" + prefix
@@ -112,13 +127,19 @@ func Group(prefix string, routerFunc RouteFunc) {
 	r.Group(prefix, routerFunc)
 }
 
+//Done 后置中间件
+func Done(handlers ...context.Handler) IRouter {
+	newRouter := newSubRouter()
+	return newRouter.Done(handlers...)
+}
+
 //Middleware 中间件
 func Middleware(handlers ...context.Handler) IRouter {
 	newRouter := newSubRouter()
 	return newRouter.Middleware(handlers...)
 }
 
-//路由前缀，用于整个controller的路径前缀
+//Prefix 路由前缀，用于整个controller的路径前缀
 func Prefix(name string) IRouter {
 	newRouter := newSubRouter()
 	return newRouter.Prefix(name)

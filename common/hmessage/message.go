@@ -3,6 +3,11 @@ package hmessage
 import "net/http"
 
 const (
+	//参数相关
+	ErrParamsCode = 1000
+
+)
+const (
 	//SUCCESS 操作成功
 	SUCCESS = "操作成功"
 	//UNAUTHORIZED 未授权
@@ -13,6 +18,9 @@ const (
 	NOT_FOUND = "资源不存在"
 	//SERVER_ERROR 系统内部错误
 	SERVER_ERROR = "系统内部错误"
+
+	//参数相关错误
+	ParameterError = "参数错误"
 )
 
 var (
@@ -22,5 +30,8 @@ var (
 		http.StatusForbidden:           FORBIDDEN,
 		http.StatusNotFound:            NOT_FOUND,
 		http.StatusInternalServerError: SERVER_ERROR,
+
+		//参数相关
+		ErrParamsCode:      ParameterError,
 	}
 )
