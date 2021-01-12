@@ -50,9 +50,6 @@ func register(r *router, app *mvc.Application) {
 	for k := range r.handler {
 		pMvc.Handle(r.handler[k])
 	}
-	if len(r.done) > 0 {
-		pMvc.Router.Done(r.done[0])
-	}
 
 	//子路由
 	for k := range r.routers {
