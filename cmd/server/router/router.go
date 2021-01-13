@@ -22,7 +22,6 @@ type IRouter interface {
 	Prefix(prefix string) IRouter
 	Handler(controller interface{})
 	Services(services ...interface{}) IRouter
-	Done(handlers ...context.Handler) IRouter
 }
 
 //RegisterRouter 向框架中注入
@@ -61,18 +60,10 @@ func register(r *router, app *mvc.Application) {
 type router struct {
 	parent      *router
 	prefix      string
-	done        []context.Handler
 	middlewares []context.Handler
 	services    []interface{}
 	handler     []interface{}
 	routers     []*router
-}
-
-//Done 只作用于所有的后置中间件
-func (r *router) Done(handlers ...context.Handler) IRouter {
-	rSub := &router{done: handlers}
-	r.routers = append(r.routers, rSub)
-	return rSub
 }
 
 //Group 分组
@@ -89,9 +80,8 @@ func (r *router) Group(prefix string, routeFunc RouteFunc) {
 
 //Middleware 中间件
 func (r *router) Middleware(handlers ...context.Handler) IRouter {
-	rSub := &router{middlewares: handlers}
-	r.routers = append(r.routers, rSub)
-	return rSub
+	r.middlewares = append(r.middlewares, handlers...)
+	return r
 }
 
 //Prefix 路由名称
@@ -107,9 +97,8 @@ func (r *router) Prefix(name string) IRouter {
 
 //Services 需要注入到controller 的service
 func (r *router) Services(services ...interface{}) IRouter {
-	rSub := &router{services: services}
-	r.routers = append(r.routers, rSub)
-	return rSub
+	r.services = append(r.services, services...)
+	return r
 }
 
 //Handler 处理controller
@@ -122,12 +111,6 @@ func Group(prefix string, routerFunc RouteFunc) {
 	r := &router{prefix: prefix}
 
 	r.Group(prefix, routerFunc)
-}
-
-//Done 后置中间件
-func Done(handlers ...context.Handler) IRouter {
-	newRouter := newSubRouter()
-	return newRouter.Done(handlers...)
 }
 
 //Middleware 中间件
