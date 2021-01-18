@@ -12,8 +12,8 @@ var (
 //初始化自定义的配置
 func initEnv() {
 	configPath := &config.FilePath{Filename: "env.yml"}
-	env := viper.New()
-	config.Register(configPath, &env)
+	env = viper.New()
+	config.Register(configPath, env)
 }
 
 //Env 获取string 类型的配置
@@ -21,6 +21,7 @@ func Env(key string) string {
 	if env == nil {
 		initEnv()
 	}
+
 	return env.GetString(key)
 }
 
