@@ -3,6 +3,7 @@ package validate
 import (
 	"fmt"
 	"reflect"
+	"regexp"
 
 	"github.com/bertang/bert/common/logger"
 	"github.com/go-playground/locales/zh"
@@ -27,6 +28,7 @@ func initValidate() (validate *validator.Validate, trans ut.Translator) {
 		}
 		return fld.Name
 	})
+	_ = validate.RegisterValidation("mobile", CheckMobile)
 	return
 }
 
@@ -68,4 +70,11 @@ func Validate(data interface{}) map[string]string {
 		errMap[fieldJSONTag[err.StructField()]] = err.Translate(trans)
 	}
 	return errMap
+}
+
+//CheckMobile 检查手机号
+func CheckMobile(fl validator.FieldLevel) bool {
+	reg := `^1([38][0-9]|14[579]|5[^4]|16[6]|7[1-35-8]|9[189])\d{8}$`
+	rgx := regexp.MustCompile(reg)
+	return  rgx.MatchString(fl.Field().String())
 }
