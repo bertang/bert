@@ -87,7 +87,7 @@ func Errorf(format string, v ...interface{}) {
 }
 
 //LoggerErrInfo 记录错误位置
-func LoggerErrInfo(v ...interface{}) {
+func ErrInfo(v ...interface{}) {
     pc, _,_,_ := runtime.Caller(1)
     f:=runtime.FuncForPC(pc)
     Errorf("发生错误：" + f.Name() + ":%s", v...)
