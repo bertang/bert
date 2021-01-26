@@ -3,6 +3,7 @@ package logger
 import (
     "io"
     "os"
+    "runtime"
 
     "github.com/bertang/bert/common/config/application"
     "github.com/kataras/golog"
@@ -83,4 +84,11 @@ func Warnf(format string, v ...interface{}) {
 //Errorf 错误输出格式化
 func Errorf(format string, v ...interface{}) {
     logger.Errorf(format, v...)
+}
+
+//LoggerErrInfo 记录错误位置
+func LoggerErrInfo(v ...interface{}) {
+    pc, _,_,_ := runtime.Caller(1)
+    f:=runtime.FuncForPC(pc)
+    Errorf("发生错误：" + f.Name() + ":%s", v...)
 }
