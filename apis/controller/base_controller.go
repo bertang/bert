@@ -2,7 +2,9 @@ package controller
 
 import (
 	"bytes"
+	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/bertang/bert/common/consts"
@@ -52,6 +54,9 @@ func (b *BaseController) Result(code int, message string, data interface{}) view
 		}
 
 		//如果是其他格式，如果是上传不记录
+		contentType := b.Ctx.GetHeader("Content-Type")
+		contentType = strings.Split(contentType, ";")[0]
+
 		if b.Ctx.GetHeader("Content-Type") != "application/json" {
 			logModel.Type = consts.OperLogTypeOther
 		} else {
@@ -64,6 +69,7 @@ func (b *BaseController) Result(code int, message string, data interface{}) view
 			}
 			p, _ := b.Ctx.GetBody()
 			logModel.Params = string(bytes.ReplaceAll(bytes.ReplaceAll(p, []byte{'\n'}, []byte{}), []byte("    "), []byte{}))
+			fmt.Println(string(p))
 		}
 
 		userClaim := jwt2.Get(b.Ctx).(*jwt.UserClaim)
