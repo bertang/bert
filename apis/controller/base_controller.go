@@ -57,7 +57,7 @@ func (b *BaseController) Result(code int, message string, data interface{}) view
 		contentType := b.Ctx.GetHeader("Content-Type")
 		contentType = strings.Split(contentType, ";")[0]
 
-		if b.Ctx.GetHeader("Content-Type") != "application/json" {
+		if contentType != "application/json" {
 			logModel.Type = consts.OperLogTypeOther
 		} else {
 			if b.Ctx.Method() == iris.MethodPost {
