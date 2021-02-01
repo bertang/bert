@@ -10,6 +10,7 @@ require (
 	github.com/k0kubun/colorstring v0.0.0-20150214042306-9440f1994b88 // indirect
 	github.com/kataras/golog v0.1.6
 	github.com/kataras/iris/v12 v12.0.0-20201227165106-3e6fd799066f
+	github.com/mitchellh/mapstructure v1.4.1 // indirect
 	github.com/natefinch/lumberjack v2.0.0+incompatible
 	github.com/nats-io/nats-server/v2 v2.1.9 // indirect
 	github.com/onsi/gomega v1.10.4 // indirect

@@ -19,6 +19,7 @@ type UserClaim struct {
 	Mobile string
 	Email  string
 	Avatar string
+	Roles  []uint
 }
 
 //Sign jwt 签名
