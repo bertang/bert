@@ -15,7 +15,7 @@ type Helper struct {
 
 //Offset 获取offset
 func (p *Helper) Offset() int {
-	return p.offset
+	return (p.Page - 1) * p.Size
 }
 
 //NewPageHelper 生成新的分页助手
@@ -31,6 +31,6 @@ func NewPageHelper(ctx iris.Context) Helper {
 		Page: page,
 		Size: size,
 	}
-	helper.offset = (helper.Page - 1) * helper.Size
+
 	return helper
 }
