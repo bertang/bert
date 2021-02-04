@@ -10,9 +10,9 @@ import (
 )
 
 var (
-	ch      chan interface{} //用于停止定时任务的channel
-	jobs    sync.Map //注册任务的保存地
-	service ICronService //用于获取任务的service
+	ch      chan interface{}  //用于停止定时任务的channel
+	jobs    sync.Map          //注册任务的保存地
+	service ICronService      //用于获取任务的service
 	mIndex  = new(modelIndex) //用于反射执行时保存对应属性的位置
 )
 
@@ -125,6 +125,7 @@ func start() {
 				vv = vv.Elem()
 			}
 
+			//id必须是int类型
 			id := vv.Field(mIndex.id).Uint()
 			name := vv.Field(mIndex.name).String()
 			express := vv.Field(mIndex.express).String()
@@ -179,7 +180,7 @@ func Stop() {
 		return
 	}
 	close(ch)
-	ch  = nil
+	ch = nil
 }
 
 //Restart 重启

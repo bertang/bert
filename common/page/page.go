@@ -5,6 +5,12 @@ import (
 	"github.com/kataras/iris/v12"
 )
 
+//IPageHelper 分页帮助
+type IPageHelper interface {
+	Offset() int
+	Limit() int
+}
+
 //Helper 分页助手
 type Helper struct {
 	Page   int   `json:"page"`
@@ -16,6 +22,11 @@ type Helper struct {
 //Offset 获取offset
 func (p *Helper) Offset() int {
 	return (p.Page - 1) * p.Size
+}
+
+//Limit 获取limit
+func (p *Helper) Limit() int {
+	return p.Size
 }
 
 //NewPageHelper 生成新的分页助手

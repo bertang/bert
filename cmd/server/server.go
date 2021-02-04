@@ -38,7 +38,6 @@ func run() {
                 app = iris.Default()
         } else {
                 app = iris.New()
-                app.Logger().SetLevel("error")
         }
 
         //服务常用配置
