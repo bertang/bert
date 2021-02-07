@@ -5,6 +5,7 @@ import (
 	"reflect"
 	"sync"
 
+	"github.com/bertang/bert/common/config/application"
 	"github.com/bertang/bert/common/logger"
 	"github.com/robfig/cron"
 )
@@ -60,6 +61,10 @@ func Start() {
 }
 
 func start() {
+	//如果是debug模式不开启定时任务
+	if application.GetAppConf().Debug {
+		return
+	}
 	//用于停止定时任务的channel
 	ch = make(chan interface{})
 
