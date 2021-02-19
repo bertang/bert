@@ -12,38 +12,39 @@ import (
     "time"
 )
 
-type BertTime time.Time
+type BertTime struct {
+    time.Time
+}
 
 //MarshalJSON json
 func (b BertTime) MarshalJSON() ([]byte, error) {
-     bb:= time.Time(b)
-     if bb.IsZero() {
-         return []byte("null"), nil
-     }
+    bb := b.Time
+    if bb.IsZero() {
+        return []byte("null"), nil
+    }
 
-     return jsoniter.Marshal(bb.Format(application.GetAppConf().TimeFormat))
+    return jsoniter.Marshal(bb.Format(application.GetAppConf().TimeFormat))
 }
 
 // Value insert timestamp into mysql need this function.
-func (b BertTime) Value() (driver.Value, error ) {
+func (b BertTime) Value() (driver.Value, error) {
     var zeroTime time.Time
-    t:= time.Time(b)
+    t := b.Time
     if t.UnixNano() == zeroTime.UnixNano() {
         return nil, nil
     }
     return t, nil
 }
 
-
 func (b *BertTime) UnmarshalJSON(data []byte) error {
     data = bytes.ReplaceAll(data, []byte("\""), []byte(""))
     if string(data) == "" || len(data) == 0 {
         return nil
     }
-    temp, err:= time.ParseInLocation(application.GetAppConf().TimeFormat, string(data), time.Local)
+    temp, err := time.ParseInLocation(application.GetAppConf().TimeFormat, string(data), time.Local)
     if err != nil {
         return err
     }
-    *b = BertTime(temp)
+    b.Time = temp
     return nil
 }
