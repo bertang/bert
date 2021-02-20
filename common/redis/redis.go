@@ -25,9 +25,11 @@ func initRedis() {
                 if err != nil {
                     return nil, err
                 }
-                if _, err := c.Do("auth", rConf.Auth); err != nil {
-                    c.Close()
-                    return nil, err
+                if rConf.Auth != "" {
+                    if _, err := c.Do("auth", rConf.Auth); err != nil {
+                        c.Close()
+                        return nil, err
+                    }
                 }
                 return c, err
             },
