@@ -2,7 +2,7 @@ package router
 
 import (
 	"strings"
-
+	//"fmt"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/context"
 	"github.com/kataras/iris/v12/mvc"
@@ -52,7 +52,7 @@ func register(r *router, app *mvc.Application) {
 
 	//子路由
 	for k := range r.routers {
-		register(r.routers[k], pMvc.Party("/"))
+		register(r.routers[k], pMvc)
 	}
 }
 
