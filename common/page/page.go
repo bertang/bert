@@ -2,7 +2,7 @@ package page
 
 import (
 	"github.com/bertang/bert/common/config/application"
-	"github.com/kataras/iris/v12"
+	 "github.com/kataras/iris/v12"
 )
 
 //IPageHelper 分页帮助

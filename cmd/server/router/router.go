@@ -34,6 +34,14 @@ func RegisterRouter(app *iris.Application) {
 
 }
 
+//RegisterRouterByParty 兼容处理
+func RegisterRouterByParty(app iris.Party) {
+	p := mvc.New(app)
+	for k := range rootRouter.routers {
+		register(rootRouter.routers[k], p)
+	}
+}
+
 //循环获取
 func register(r *router, app *mvc.Application) {
 	//创建party
