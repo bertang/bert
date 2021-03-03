@@ -1,7 +1,6 @@
 package validate
 
 import (
-	"fmt"
 	"reflect"
 	"regexp"
 
@@ -16,11 +15,13 @@ func initValidate() (validate *validator.Validate, trans ut.Translator) {
 	uni := ut.New(zh.New())
 	trans, _ = uni.GetTranslator("zh")
 	validate = validator.New()
+
 	//验证器注册翻译器
 	err := zh_translations.RegisterDefaultTranslations(validate, trans)
 	if err != nil {
 		logger.Error("初始化中文验证器失败：%s", err)
 	}
+
 	validate.RegisterTagNameFunc(func(fld reflect.StructField) string {
 		name := fld.Tag.Get("label")
 		if name != "" {
@@ -28,6 +29,7 @@ func initValidate() (validate *validator.Validate, trans ut.Translator) {
 		}
 		return fld.Name
 	})
+
 	_ = validate.RegisterValidation("mobile", CheckMobile)
 	return
 }
@@ -62,11 +64,10 @@ func Validate(data interface{}) map[string]string {
 		} else {
 			fieldJSONTag[rtData.Field(k).Name] = rtData.Field(k).Tag.Get("json")
 		}
-
 	}
+
 	errMap := make(map[string]string)
 	for _, err := range err.(validator.ValidationErrors) {
-		fmt.Println(err.StructField())
 		errMap[fieldJSONTag[err.StructField()]] = err.Translate(trans)
 	}
 	return errMap
