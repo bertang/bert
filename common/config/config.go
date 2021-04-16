@@ -108,6 +108,6 @@ func Register(config IConfig, conf interface{}) {
 	}
 
 	if err := v.Unmarshal(&conf); err != nil {
-		log.Fatalln("解析配置文件出错")
+		log.Fatalf("解析配置文件出错:%s", err)
 	}
 }
