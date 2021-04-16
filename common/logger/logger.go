@@ -1,7 +1,6 @@
 package logger
 
 import (
-    "io"
     "os"
     "runtime"
 
@@ -11,40 +10,29 @@ import (
 )
 
 var (
-    lumberJackLogger *lumberjack.Logger
-    logger           *golog.Logger
+    logger           = golog.Default
 )
 
 func init() {
-    initLogger()
-}
-func initLogger() {
-    //获取一个新的日志
-    logger = golog.New()
-    SetLogger(logger)
-}
-
-//SetLogger 设置记录日志
-func SetLogger(gLog *golog.Logger) {
-    logger = gLog
     appConf := application.GetAppConf()
-    logger.TimeFormat = "2006-01-02 15:04:05"
 
-    //根据环境生成不同的输出对象
-    var writer io.Writer = os.Stdout
-    if !appConf.Debug {
-        writer = &lumberjack.Logger{
-            Filename:   appConf.LoggerName,
-            MaxSize:    appConf.MaxLogAge,
-            MaxAge:     appConf.MaxLogAge,
-            MaxBackups: appConf.MaxBackup,
-            LocalTime:  true,
-            Compress:   appConf.Compress,
-        }
+    logger.SetTimeFormat(appConf.TimeFormat)
+    if appConf.Debug {
+        logger.SetOutput(os.Stdout)
+        return
     }
-    //设置
+    writer := &lumberjack.Logger{
+        Filename:   appConf.LoggerName,
+        MaxSize:    appConf.MaxLogAge,
+        MaxAge:     appConf.MaxLogAge,
+        MaxBackups: appConf.MaxBackup,
+        LocalTime:  true,
+        Compress:   appConf.Compress,
+    }
     logger.SetOutput(writer)
+
 }
+
 
 //Info 信息
 func Info(v ...interface{}) {

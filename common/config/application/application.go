@@ -1,6 +1,7 @@
 package application
 
 import (
+    "github.com/bertang/bert/common/timer"
     "path"
 
     "github.com/bertang/bert/common/config"
@@ -64,7 +65,7 @@ func initApplication() {
     }
 
     if app.TimeFormat == "" {
-    	app.TimeFormat = "2006-01-02 15:04:05"
+    	app.TimeFormat = timer.DateTimeFormat
     }
 
 }

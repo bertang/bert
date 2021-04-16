@@ -45,9 +45,6 @@ func run() {
         //注册当服务停上时运行函数
         iris.RegisterOnInterrupt(onInterrupt)
 
-        //设置日志
-        logger.SetLogger(app.Logger())
-
         //设置跨域
         setCors()
 
@@ -97,8 +94,9 @@ func onInterrupt() {
 }
 
 func configuration() iris.Configuration {
+        app:= application.GetAppConf()
         configuration := iris.Configuration{
-                TimeFormat: "2006-01-02 15:04:05",
+                TimeFormat: app.TimeFormat,
                 Charset:    "UTF-8",
         }
 
