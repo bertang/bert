@@ -18,7 +18,7 @@ type IBaseRepo interface {
 	//DeleteByID 软删除
 	//@model 模型的接口类型
 	//@id 需要删除的数据的id 因为本系统认为默认都使用了gorm.Model所以使用uint, 也可以不使用，转为uint也可以
-	DeleteByID(model interface{}, id uint) error
+	DeleteByID(model interface{}, id uint, force bool) error
 
 	//Update 修改数据
 	//@model 模型的接口类型
@@ -76,8 +76,11 @@ func (b *BaseRepository) Add(model interface{}) error {
 //DeleteByID 软删除
 //@model 模型的接口类型
 //@id 需要删除的数据的id 因为本系统认为默认都使用了gorm.Model所以使用uint, 也可以不使用，转为uint也可以
-func (b *BaseRepository) DeleteByID(model interface{}, id uint) error {
-	return b.Db.Delete(model, id).Error
+func (b *BaseRepository) DeleteByID(model interface{}, id uint, force bool) error {
+	if !force {
+		return b.Db.Delete(model, id).Error
+	}
+	return b.Db.Unscoped().Delete(model, id).Error
 }
 
 //Update 修改数据
