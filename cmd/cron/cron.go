@@ -6,7 +6,7 @@ import (
 	"sync"
 
 	"github.com/bertang/bert/common/logger"
-	"github.com/robfig/cron"
+	"github.com/robfig/cron/v3"
 )
 
 var (
@@ -145,7 +145,7 @@ func start() {
 			//如果不存在这个key则跳过
 			if f, ok := jobs.Load(key); ok {
 				v, _ := f.(*crontab)
-				err := c.AddJob(express, &schedule{
+				_, err := c.AddJob(express, &schedule{
 					id:      uint(id),
 					jobName: name,
 					params:  params,

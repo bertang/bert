@@ -17,6 +17,7 @@ require (
 	github.com/nats-io/nats-server/v2 v2.1.9 // indirect
 	github.com/onsi/gomega v1.10.4 // indirect
 	github.com/robfig/cron v1.2.0
+	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/rs/cors v1.7.0
 	github.com/spf13/viper v1.7.1
 	github.com/yudai/pp v2.0.1+incompatible // indirect
